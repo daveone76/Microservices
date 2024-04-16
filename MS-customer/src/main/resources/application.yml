@@ -1,30 +1,13 @@
 
-server:
-  port: 8082
-  error:
-    include-message: always
+##spring.config.import: "configserver:http://localhost:8091"
 
 spring:
+  config:
+    import: configserver:http://localhost:8091
+  cloud:
+    config:
+      uri: http://localhost:8091
+      username: root
+      password: s3cr3t
   application:
-    name: Customer-Service
-
-  ##=================================
-  ##     Data base config
-  ##=================================
-  datasource:
-    url: jdbc:postgresql://34.125.235.37/proyectdev
-    username: martinv
-    password: admin
-
-  ##=================================
-  ##     Hibernate Jpa config
-  ##=================================
-
-  jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-    hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        show_sql: true
-        format_sql: true
+    name: customer-service

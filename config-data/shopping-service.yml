@@ -1,1 +1,31 @@
 
+
+server:
+  port: 8083
+  error:
+    include-message: always
+
+spring:
+   application:
+     name: Shopping-Service
+
+  ##=================================
+  ##     Data base config
+  ##=================================
+   datasource:
+     url: jdbc:postgresql://34.125.235.37/proyectdev
+     username: martinv
+     password: admin
+
+  ##=================================
+  ##     Hibernate Jpa config
+  ##=================================
+
+   jpa:
+     database-platform: org.hibernate.dialect.PostgreSQLDialect
+     hibernate:
+       ddl-auto: create
+     properties:
+       hibernate:
+         show_sql: true
+         format_sql: true
