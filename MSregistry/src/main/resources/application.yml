@@ -1,0 +1,13 @@
+
+##spring.config.import: "configserver:http://localhost:8091"
+
+spring:
+  config:
+    import: configserver:http://localhost:8091
+  cloud:
+    config:
+      uri: http://localhost:8091
+      username: root
+      password: s3cr3t
+  application:
+    name: registry-service
