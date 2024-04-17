@@ -43,6 +43,7 @@ public class Invoice {
 
 
     @Transient
+    @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
     private Customer customer;
 
     public Invoice(){

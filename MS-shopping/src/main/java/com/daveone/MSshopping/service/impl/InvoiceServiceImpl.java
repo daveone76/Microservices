@@ -9,6 +9,7 @@ import com.daveone.MSshopping.model.Product;
 import com.daveone.MSshopping.repository.InvoiceItemsRepository;
 import com.daveone.MSshopping.repository.InvoiceRepository;
 import com.daveone.MSshopping.service.InvoiceService;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -82,7 +83,6 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public Invoice getInvoice(Long id) {
-
         Invoice invoice= invoiceRepository.findById(id).orElse(null);
         if (null != invoice ){
             Customer customer = customerClient.getCustomer(invoice.getCustomerId()).getBody();
