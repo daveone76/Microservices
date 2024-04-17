@@ -10,6 +10,7 @@ import com.daveone.MSshopping.repository.InvoiceItemsRepository;
 import com.daveone.MSshopping.repository.InvoiceRepository;
 import com.daveone.MSshopping.service.InvoiceService;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 
 
 @Service
+@Slf4j
 public class InvoiceServiceImpl implements InvoiceService {
 
     @Autowired
@@ -82,6 +84,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     @Override
+    @CircuitBreaker(name = "customer-service", fallbackMethod = "fallbackGetInvoice")
     public Invoice getInvoice(Long id) {
         Invoice invoice= invoiceRepository.findById(id).orElse(null);
         if (null != invoice ){
@@ -96,4 +99,25 @@ public class InvoiceServiceImpl implements InvoiceService {
         }
         return invoice ;
     }
+
+    public Invoice fallbackGetInvoice(Long id, Exception e) {
+        log.error("Error al obtener la factura con ID {}", id, e);
+        Invoice invoice= invoiceRepository.findById(id).orElse(null);
+        if (null != invoice ){
+            Customer customer = Customer.builder()
+                    .firstName("none")
+                    .lastName("none").build();
+            invoice.setCustomer(customer);
+            List<InvoiceItem> listItem=invoice.getItems().stream().map(invoiceItem -> {
+                Product product = productClient.getProduct(invoiceItem.getProductId()).getBody();
+                invoiceItem.setProduct(product);
+                return invoiceItem;
+            }).collect(Collectors.toList());
+            invoice.setItems(listItem);
+        }
+        return invoice ;
+    }
+
+
+
 }

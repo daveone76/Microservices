@@ -12,16 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 
 @FeignClient(name = "customer-service")
-@CircuitBreaker(name = "customer-service")
 public interface CustomerClient {
 
     @GetMapping(value = "api/customers/{id}")
     public ResponseEntity<Customer> getCustomer(@PathVariable("id") long id);
 
-    default ResponseEntity<Customer> fallbackMethod(Long id, Double quantity, Exception e) {
-
-        return new ResponseEntity<>(Customer.builder().build(), HttpStatus.OK);
-    }
 
 }
 

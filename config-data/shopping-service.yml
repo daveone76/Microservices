@@ -38,3 +38,40 @@ eureka:
     serviceUrl:
       defaultZone: http://localhost:8084/eureka/
 
+  ##=================================
+  ##     Rescilence4j config
+  ##=================================
+
+management:
+  health:
+    circuitBreakers:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health
+  enpoint:
+    health: 
+      show-details: always          
+
+resilence4j:
+  circuitbreaker:
+    instances:
+      customer-service:
+        resilenceHealthIndicator: true
+        eventCustomerBufferSize: 10
+        faliureRateThreshold: 50
+        minimumNumberOfCalls: 5
+        automaticTransitionFromOpenToHafOpenEnabled: true
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowSize: 10
+        slidingWindowType: COUNT_BASED
+      product-service:
+        resilenceHealthIndicator: true
+        eventCustomerBufferSize: 10
+        faliureRateThreshold: 50
+        minimumNumberOfCalls: 5
+        automaticTransitionFromOpenToHafOpenEnabled: true
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowSize: 10
+        slidingWindowType: COUNT_BASED  
