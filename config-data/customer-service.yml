@@ -6,7 +6,7 @@ server:
 
 spring:
   application:
-    name: Customer-Service
+    name: customer-service
 
   ##=================================
   ##     Data base config

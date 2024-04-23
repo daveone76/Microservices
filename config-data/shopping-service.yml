@@ -7,7 +7,7 @@ server:
 
 spring:
    application:
-     name: Shopping-Service
+     name: shopping-service
 
   ##=================================
   ##     Data base config
