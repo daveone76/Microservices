@@ -8,13 +8,6 @@ server:
 spring:
    application:
      name: shopping-service
-  ##=================================
-  ##  Client for admin server config
-  ##=================================
-    boot:
-      admin:
-        client:
-          url: http://localhost:8088   
 
   ##=================================
   ##     Data base config

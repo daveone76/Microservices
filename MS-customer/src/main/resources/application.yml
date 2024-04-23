@@ -11,3 +11,7 @@ spring:
       password: s3cr3t
   application:
     name: customer-service
+  boot:
+    admin:
+      client:
+        url: http://localhost:8088

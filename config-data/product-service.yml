@@ -7,14 +7,7 @@ server:
 
 spring:
    application:
-     name: product-service
-  ##=================================
-  ##  Client for admin server config
-  ##=================================
-    boot:
-      admin:
-        client:
-          url: http://localhost:8088        
+     name: product-service    
 
   ##=================================
   ##     Data base config
