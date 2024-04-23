@@ -9,6 +9,7 @@ import com.daveone.MSshopping.model.Product;
 import com.daveone.MSshopping.repository.InvoiceItemsRepository;
 import com.daveone.MSshopping.repository.InvoiceRepository;
 import com.daveone.MSshopping.service.InvoiceService;
+import feign.FeignException;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,23 +101,78 @@ public class InvoiceServiceImpl implements InvoiceService {
         return invoice ;
     }
 
+
     public Invoice fallbackGetInvoice(Long id, Exception e) {
-        log.error("Error al obtener la factura con ID {}", id, e);
-        Invoice invoice= invoiceRepository.findById(id).orElse(null);
-        if (null != invoice ){
+        log.error("Error getting invoice with ID {}", id, e);
+        Invoice invoice = invoiceRepository.findById(id).orElse(null);
+        if (null != invoice) {
             Customer customer = Customer.builder()
                     .firstName("none")
                     .lastName("none").build();
             invoice.setCustomer(customer);
-            List<InvoiceItem> listItem=invoice.getItems().stream().map(invoiceItem -> {
+            List<InvoiceItem> listItem = invoice.getItems().stream().map(invoiceItem -> {
                 Product product = productClient.getProduct(invoiceItem.getProductId()).getBody();
                 invoiceItem.setProduct(product);
                 return invoiceItem;
             }).collect(Collectors.toList());
             invoice.setItems(listItem);
         }
-        return invoice ;
+        return invoice;
     }
+
+    /*
+    @CircuitBreaker(name = "customer-service", fallbackMethod = "fallbackGetCustomerById")
+    public Customer getCustomerById(Long id){
+        return  customerClient.getCustomer(id).getBody();
+    }
+
+    @CircuitBreaker(name = "product-service", fallbackMethod = "fallbackGetProductById")
+    public Product getProductById(Long id){
+        try {
+            return productClient.getProduct(id).getBody();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+           return Product.builder().build();
+    }
+
+    @CircuitBreaker(name = "product-service", fallbackMethod = "fallbackUpdateStockProductById")
+    public Product updateStockProductById(Long id, Double quantity){
+        return productClient.updateStockProduct(id, quantity).getBody();
+    }
+
+    public Customer fallbackGetCustomerById(Long id, FeignException e){
+        log.error("Error getting customer with ID {}", id, e);
+        e.printStackTrace();
+        return  Customer.builder()
+                .email("none")
+                .firstName("none")
+                .lastName("none")
+                .build();
+    }
+
+    public Product fallbackGetProductById(Long id, FeignException e){
+        log.error("Error getting product with ID {}", id, e);
+
+        return  Product.builder()
+                .description("none")
+                .status("none")
+                .name("none")
+                .build();
+    }
+
+    public Product fallbackUpdateStockProductById(Long id, Double quantity, FeignException e){
+        log.error("Error updating product with ID {}", id, e);
+        return   Product.builder()
+                .description("none")
+                .status("none")
+                .name("none")
+                .build();
+    }
+
+
+     */
 
 
 
