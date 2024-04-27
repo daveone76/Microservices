@@ -3,9 +3,12 @@ package com.daveone.MSproduct.service.impl;
 
 import com.daveone.MSproduct.entity.Category;
 import com.daveone.MSproduct.entity.Product;
+import com.daveone.MSproduct.model.ProductModel;
 import com.daveone.MSproduct.repository.ProductRepository;
 import com.daveone.MSproduct.service.ProductService;
+import com.daveone.MSproduct.utils.Converter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -16,7 +19,12 @@ import java.util.List;
 public class ProductServiceImpl  implements ProductService {
 
 
-    private final ProductRepository productRepository;
+    @Autowired
+    private  ProductRepository productRepository;
+
+    @Autowired
+    private Converter converter;
+
 
     @Override
     public List<Product> listAllProduct() {
@@ -24,8 +32,14 @@ public class ProductServiceImpl  implements ProductService {
     }
 
     @Override
+    public ProductModel getProductMapper(Long id) {
+        Product productDb =  productRepository.findById(id).orElse(null);
+        return converter.productEntityToModel(productDb);
+    }
+
+    @Override
     public Product getProduct(Long id) {
-        return productRepository.findById(id).orElse(null);
+       return productRepository.findById(id).orElse(null);
     }
 
     @Override
@@ -35,6 +49,7 @@ public class ProductServiceImpl  implements ProductService {
 
         return productRepository.save(product);
     }
+
 
     @Override
     public Product updateProduct(Product product) {

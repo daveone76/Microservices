@@ -2,9 +2,6 @@ package com.daveone.MSproduct.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,12 +23,10 @@ public class Product {
     @Column(name = "id")
     private Long id;
 
-    @NotEmpty(message = "El nombre no debe ser vacío")
     @Column(name = "name")
     private String name;
     @Column(name = "description")
     private String description;
-    @Positive(message = "El stock debe ser mayor que cero")
     private Double stock;
     @Column(name = "price")
     private Double price;
@@ -42,7 +37,6 @@ public class Product {
     @Temporal(TemporalType.TIMESTAMP)
     private Date createAt;
 
-    @NotNull(message = "La categoria no puede ser vacia")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     @JsonIgnoreProperties({"hibernateLazyInitializer","handler"})

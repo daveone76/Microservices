@@ -3,10 +3,13 @@ package com.daveone.MSproduct.controller;
 import com.daveone.MSproduct.entity.Category;
 import com.daveone.MSproduct.entity.Product;
 import com.daveone.MSproduct.errorHandler.ErrorMessage;
+import com.daveone.MSproduct.model.ProductModel;
 import com.daveone.MSproduct.service.ProductService;
+import com.daveone.MSproduct.utils.Constants;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +25,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(value = "/api/products")
+@RequestMapping(value = Constants.PRODUCT_REST_PATH)
+@Slf4j
 public class ProductController {
 
     @Autowired
@@ -32,13 +36,17 @@ public class ProductController {
     public ResponseEntity<List<Product>> listProduct(@RequestParam(name = "categoryId", required = false) Long categoryId){
         List<Product> products = new ArrayList<>();
         if (null ==  categoryId){
+            log.info("Getting all products in the data base...");
             products = productService.listAllProduct();
             if (products.isEmpty()){
+                log.info("No products found...");
                 return ResponseEntity.noContent().build();
             }
         }else{
+            log.info("Getting all products by idCategory {} ", categoryId);
             products = productService.findByCategory(Category.builder().id(categoryId).build());
             if (products.isEmpty()){
+                log.info("No products found...");
                 return ResponseEntity.notFound().build();
             }
         }
@@ -49,8 +57,9 @@ public class ProductController {
 
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Product> getProduct(@PathVariable("id") Long id) {
-        Product product =  productService.getProduct(id);
+    public ResponseEntity<ProductModel> getProduct(@PathVariable("id") Long id) {
+        log.info("Getting Product with ID {} ", id);
+        ProductModel product =  productService.getProductMapper(id);
         if (null==product){
             return ResponseEntity.notFound().build();
         }
